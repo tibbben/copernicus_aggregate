@@ -72,7 +72,7 @@ def copernicus_aggregate(opts):
     avg_variable = variable.mean(axis=0)
 
     # Create NetCDF file
-    ncfile = Dataset(f"{opts['table']}.{opts['format']}", 'w', format='NETCDF4')
+    ncfile = Dataset(f"{opts['destination']}/{opts['table']}.{opts['format']}", 'w', format='NETCDF4')
     ncfile.Conventions = "CF-1.7"
     ncfile.geo_crs = "EPSG:4326"
 
@@ -115,6 +115,7 @@ def main():
         opts['variable'] = opts['attributes'][0].split(';')[0]
         opts['units'] = opts['attributes'][0].split(';')[4]
         opts['year'] = sys.argv[2]
+        opts['destination'] = "../download"
     else: # testing default
         opts = {
             "table": "tz_1984_copernics_avg_temp",
@@ -124,7 +125,8 @@ def main():
             "variable": "2m_temperature",
             "units": "kelvin",
             "bands": ["t2m"],
-            "format": "nc"
+            "format": "nc",
+            "destintion": "."
         }
     copernicus_aggregate(opts)
 
