@@ -1,0 +1,6 @@
+*.DS_Store
+*.nc
+*.xml
+*.zip
+*.ipynb
+./ipynb_checkpoints/
