@@ -6,6 +6,8 @@ import json
 import sys
 
 def copernicus_aggregate(opts):
+
+    # set request paramaters
     data_format = "grib" if opts['format'] == "grib" else "netcdf"
     dataset = "reanalysis-era5-single-levels"
     request = {
@@ -45,26 +47,24 @@ def copernicus_aggregate(opts):
         "download_format": opts['extension'],
         "area": opts['extent']
     }
-    target = f"{opts['table']}.{opts['extension']}"
+    target = f"{opts['destination']}/{opts['table']}.{opts['extension']}"
 
-    print(request)
-    print(dataset)
-    print(target)
-    
+    # make the data request    
     client = cdsapi.Client()
     client.retrieve(dataset, request, target)
 
+    # unzip if needed
     if opts['extension'] == "zip":
         cmd = (
-            f"unzip {opts['table']}.{opts['extension']}\n"
-            f"mv data_stream-oper_stepType-instant.{opts['format']} temp_{opts['table']}.{opts['format']}"
+            f"unzip -d {opts['destination']} {opts['destination']}/{opts['table']}.{opts['extension']}\n"
+            f"mv {opts['destination']}/data_stream-oper_stepType-instant.{opts['format']} {opts['destination']}/temp_{opts['table']}.{opts['format']}"
         )
         res = os.system(cmd)
         print(res)
 
     # Load download and average across all time bands 
     # assumes file is netcdf
-    nc_f = f"./temp_{opts['table']}.{opts['format']}"  # Your filename
+    nc_f = f"{opts['destination']}/temp_{opts['table']}.{opts['format']}"  # Your filename
     nc_fid = Dataset(nc_f, 'r')
     variable = nc_fid.variables[opts['bands'][0]][:]  # shape is time, lat, lon
     latitude = nc_fid.variables['latitude'][:]
