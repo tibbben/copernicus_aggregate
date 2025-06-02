@@ -57,14 +57,14 @@ def copernicus_aggregate(opts):
     if opts['extension'] == "zip":
         cmd = (
             f"unzip {opts['table']}.{opts['extension']}\n"
-            f"mv data_stream-oper_stepType-instant.{opts['format']} temp_{opts['table']}.{opts['extension']}"
+            f"mv data_stream-oper_stepType-instant.{opts['format']} temp_{opts['table']}.{opts['format']}"
         )
         res = os.system(cmd)
         print(res)
 
     # Load download and average across all time bands 
     # assumes file is netcdf
-    nc_f = f"./temp_{opts['table']}.{opts['extension']}"  # Your filename
+    nc_f = f"./temp_{opts['table']}.{opts['format']}"  # Your filename
     nc_fid = Dataset(nc_f, 'r')
     variable = nc_fid.variables[opts['bands'][0]][:]  # shape is time, lat, lon
     latitude = nc_fid.variables['latitude'][:]
@@ -72,7 +72,7 @@ def copernicus_aggregate(opts):
     avg_variable = variable.mean(axis=0)
 
     # Create NetCDF file
-    ncfile = Dataset(f"{opts['table']}.{opts['extension']}", 'w', format='NETCDF4')
+    ncfile = Dataset(f"{opts['table']}.{opts['format']}", 'w', format='NETCDF4')
     ncfile.Conventions = "CF-1.7"
     ncfile.geo_crs = "EPSG:4326"
 
