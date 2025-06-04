@@ -87,15 +87,15 @@ def copernicus_aggregate(opts):
     lon = ncfile.createVariable('longitude', 'f8', ('longitude',))
     lon.units = 'degrees_east'
     lon.standard_name = 'longitude'
-    var= ncfile.createVariable(opts['variable'], 'f8', ('latitude', 'longitude'))
+    var= ncfile.createVariable(opts['variable'], 'f8', ('latitude', 'longitude'), fill_value=-999)
     var.grid_mapping = 'crs'
     var.units = opts['units']
     
     # create CRS var
-    crs_var = ncfile.createVariable('crs', 'i8', ())
-    crs_var.standard_name = 'crs'
-    crs_var.grid_mapping_name = 'latitude_longitude'
-    crs_var.crs_wkt = ("GEOGCS['GCS_WGS_1984',DATUM['D_WGS_1984',"
+    crs = ncfile.createVariable('crs', 'i8', ())
+    crs.standard_name = 'crs'
+    crs.grid_mapping_name = 'latitude_longitude'
+    crs.crs_wkt = ("GEOGCS['GCS_WGS_1984',DATUM['D_WGS_1984',"
                        "SPHEROID['WGS_1984',6378137.0,298.257223563]],"
                        "PRIMEM['Greenwich',0.0],"
                        "UNIT['Degree',0.0174532925199433]]")
